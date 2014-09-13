@@ -1,0 +1,72 @@
+# -*- mode: ruby -*-
+# vim: ft=ruby
+
+
+# ---- Configuration variables ----
+
+# Vagrant API version
+VAGRANTFILE_API_VERSION = '2'
+
+# Enable/Disable GUI
+GUI               = false
+
+# Default memory size in MB
+RAM               = 512
+
+# Network configuration
+DOMAIN            = ".nat.example.com"
+NETWORK           = "192.168.50."
+NETMASK           = "255.255.255.0"
+
+# Default Virtualbox .box
+# Source: https://github.com/ginas/vagrant-debian-wheezy-64
+BOX               = 'debian-wheezy-amd64-netinst'
+BOX_URL           = 'https://dl.dropboxusercontent.com/u/55426468/20140317/debian-wheezy-amd64-netinst.box'
+
+# Default username and SSH id_rsa
+SSH_USERNAME      = 'vagrant'
+SSH_ID_RSA        = '../../lib/vagrant/ssh/vagrant_insecure_id_rsa'
+
+# Ansible configuration
+ANSIBLE_INVENTORY = "ansible/inventory"
+ANSIBLE_PLAYBOOK  = "debops-playbooks/playbooks/site.yml"
+
+
+# ---- Custom commands run on the main host ----
+
+# Fix permissions of vagrant's insecure SSH key
+File.chmod(0600, DEFAULT_SSH_ID_RSA)
+
+
+# ---- Vagrant configuration ----
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.box     = BOX
+  config.vm.box_url = BOX_URL
+
+  config.ssh.username         = SSH_USERNAME
+  config.ssh.private_key_path = SSH_ID_RSA
+
+  config.vm.guest = :debian
+
+  config.vm.provider "virtualbox" do |vbox|
+    vbox.gui    = GUI
+    vbox.memory = RAM
+  end
+
+  config.vm.define :web do |web|
+    web.vm.hostname = 'web' + DOMAIN
+    web.vm.network :private_network, ip: NETWORK + "10", :netmask => NETMASK
+
+    web.vm.synced_folder "", "/vagrant", disabled: true
+    web.vm.synced_folder "", "/home/vagrant/debops"
+
+    config.vm.provision "ansible" do |ansible|
+      ansible.host_key_checking = "false"
+      ansible.inventory_path = ANSIBLE_INVENTORY
+      ansible.playbook       = ANSIBLE_PLAYBOOK
+    end
+  end
+end
+

@@ -1,0 +1,10 @@
+web
+
+[debops_nginx]
+web
+
+[debops_php5]
+web
+
+[debops_gitusers]
+web

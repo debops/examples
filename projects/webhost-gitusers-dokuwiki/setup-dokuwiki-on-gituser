@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Setup DokuWiki on a webserver using a gituser account
+
+# ---- Variables ----
+
+# Configuration of gituser account
+user="git-wiki"
+host="web"
+repository="dokuwiki"
+branch="local_changes"
+
+# DokuWiki sources
+dokuwiki_repo="git://github.com/splitbrain/dokuwiki.git"
+dokuwiki_source="src/dokuwiki"
+dokuwiki_tag="release_stable_2014-05-05a"
+
+
+# ---- Setup gituser account on web server ----
+
+ssh ${user}@${host} init ${repository} ${branch}
+ssh ${user}@${host} publish ${repository}
+
+
+# ---- Clone DokuWiki source ----
+
+git clone --branch ${dokuwiki_tag} ${dokuwiki_repo} ${dokuwiki_source}
+pushd ${dokuwiki_source}
+git checkout -b ${branch}
+
+
+# Add web server remote to git repository
+git remote add webserver ${user}@${host}:${repository}
+
+
+# Push DokuWiki to the web server
+git push webserver ${branch}
+
