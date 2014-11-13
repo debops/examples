@@ -1,0 +1,50 @@
+# Example inventory for DebOps development lab
+
+# ---- Ansible Controllers ----
+[workstation]
+
+# Primary KVM host
+helios ansible_connection=local
+
+
+# ---- DebOps Development Lab ----
+[devlab]
+
+# Local APT repository, APT cache and preseeding server
+selena
+
+# LXC hosts
+jupiter
+saturn
+
+# LXC containers
+galileo
+cassini
+
+
+# ---- IPv6 networking ----
+
+# Enable access to IPv6 network using 6to4 tunnel
+[debops_6to4]
+helios
+
+
+# ---- Development Lab infrastructure ----
+
+# Configure internal network for KVM guests and LXC containers
+[debops_subnetwork]
+helios
+
+# Configure DNS. DHCP, TFTP for internal network
+[debops_dnsmasq]
+helios
+
+# Configure KVM on main host
+[debops_kvm]
+helios
+
+# Configure LXC containers on KVM guests
+[debops_lxc]
+jupiter
+saturn
+

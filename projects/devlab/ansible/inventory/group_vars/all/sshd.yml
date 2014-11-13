@@ -1,0 +1,6 @@
+---
+
+# Allow access from internal networks on all hosts, this is needed if you use
+# dual-stack IPv4/IPv6 network in which case ssh connections might jump from
+# one IP address space to another
+sshd_allow: '{{ ([ inventory_net.ipv4 ] | ipaddr("subnet")) + (inventory_net.ipv6 | ipaddr("subnet")) }}'

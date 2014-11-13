@@ -1,0 +1,7 @@
+---
+
+# Configure internal network for KVM guests and LXC containers
+subnetwork_ipv4: '{{ inventory_net.ipv4 }}'
+
+subnetwork_ipv6: '{{ inventory_net.ipv6 }}'
+

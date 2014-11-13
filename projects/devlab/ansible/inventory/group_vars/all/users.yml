@@ -1,0 +1,8 @@
+---
+
+# Set default shell to /bin/zsh
+users_default_shell: '/bin/zsh'
+
+# Install dotfiles everywhere
+users_default_dotfiles: True
+

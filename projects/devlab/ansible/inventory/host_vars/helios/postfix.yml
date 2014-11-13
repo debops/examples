@@ -1,0 +1,10 @@
+---
+
+# Enable local mail on workstation and accept incoming mail from internal network
+
+postfix: [ 'local', 'network', 'mx' ]
+
+postfix_mynetworks: '{{ ([ inventory_net.ipv4 ] | ipaddr("subnet")) + (inventory_net.ipv6 | ipaddr("subnet")) }}'
+
+postfix_allow_smtp: '{{ ([ inventory_net.ipv4 ] | ipaddr("subnet")) + (inventory_net.ipv6 | ipaddr("subnet")) }}'
+

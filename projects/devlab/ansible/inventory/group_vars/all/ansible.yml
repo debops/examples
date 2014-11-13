@@ -1,0 +1,5 @@
+---
+
+# Use stable Ansible version everywhere
+role_ansible_version: 'v1.7.2'
+

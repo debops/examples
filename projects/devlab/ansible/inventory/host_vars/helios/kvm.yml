@@ -1,0 +1,5 @@
+---
+
+# On Ubuntu/Xubuntu, KVM group is named differently
+kvm_group: 'libvirtd'
+
