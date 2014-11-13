@@ -1,0 +1,8 @@
+---
+
+# Specify host with APT local repository and APT cache
+apt: 'selena.{{ ansible_domain }}'
+
+# Add custom APT mirrors to have more reliable APT sources
+apt_mirrors: [ 'http://ftp.us.debian.org/debian' ]
+

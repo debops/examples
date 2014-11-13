@@ -1,0 +1,20 @@
+---
+
+# Internal networks, IP addresses point to router on helios
+inventory_net:
+
+  # IPv4 network behind NAT
+  ipv4: '192.168.144.1/24'
+
+  # IPv6 network
+  ipv6:
+  	  
+    # Your own prefix
+    - '2001:db8:1234:5678::1/64'
+
+    # ULA prefix (get one on http://unique-local-ipv6.com/)
+    #- '{{ "2001:db8:12:34::/48" | ipsubnet(64, 57008) | ipaddr("1") }}'
+
+    # Automatically created 6to4 prefix on host with public IPv4 address
+    #- '{{ ansible_default_ipv4.address | ipaddr("6to4") | ipsubnet(64, 57008) | ipaddr("1") }}'
+

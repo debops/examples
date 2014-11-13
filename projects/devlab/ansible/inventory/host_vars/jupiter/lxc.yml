@@ -1,0 +1,8 @@
+---
+
+# Create LXC containers
+lxc_containers:
+
+  - name: 'galileo'
+    state: 'started'
+

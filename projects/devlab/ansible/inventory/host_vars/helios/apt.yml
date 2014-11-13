@@ -1,0 +1,31 @@
+---
+
+# Install additional packages on workstation
+apt_host_packages:
+
+  - isync
+  - mutt
+  - mutt-patched
+  - msmtp
+  - urlscan
+  - feh
+  - pass
+
+  - uptimed
+  - gnome-terminal
+  - newsbeuter
+  - fonts-inconsolata
+
+  - smtube
+  - vlc
+
+  - weechat-curses
+  - elinks
+  - virt-manager
+
+  - nmap
+  - bind9-host
+  - mtr-tiny
+  - whois
+  - telnet
+

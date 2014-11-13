@@ -1,0 +1,12 @@
+---
+
+# Enable public DNS to have internal domain resolvable from outside
+dnsmasq_public_dns: True
+
+# Create some CNAMEs in DNS
+dnsmasq_cname:
+
+  'selena': [ 'destroy.selena', 'apt' ]
+
+  'cassini': [ 'code', 'mysql', 'ipam', 'owncloud' ]
+
