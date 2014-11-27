@@ -23,19 +23,12 @@ NETMASK           = "255.255.255.0"
 BOX               = 'debian-wheezy-amd64-netinst'
 BOX_URL           = 'https://dl.dropboxusercontent.com/u/55426468/20140317/debian-wheezy-amd64-netinst.box'
 
-# Default username and SSH id_rsa
-SSH_USERNAME      = 'vagrant'
-SSH_ID_RSA        = '../../lib/vagrant/ssh/vagrant_insecure_id_rsa'
-
 # Ansible configuration
 ANSIBLE_INVENTORY = "ansible/inventory"
 ANSIBLE_PLAYBOOK  = "debops-playbooks/playbooks/site.yml"
 
 
 # ---- Custom commands run on the main host ----
-
-# Fix permissions of vagrant's insecure SSH key
-File.chmod(0600, DEFAULT_SSH_ID_RSA)
 
 
 # ---- Vagrant configuration ----
@@ -44,9 +37,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.box     = BOX
   config.vm.box_url = BOX_URL
-
-  config.ssh.username         = SSH_USERNAME
-  config.ssh.private_key_path = SSH_ID_RSA
 
   config.vm.guest = :debian
 
