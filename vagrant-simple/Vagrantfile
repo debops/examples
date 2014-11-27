@@ -4,14 +4,8 @@
 
 # ---- Configuration variables ----
 
-# Vagrant API version
-VAGRANTFILE_API_VERSION = '2'
-
-# Enable/Disable GUI
-GUI               = false
-
-# Default memory size in MB
-RAM               = 512
+GUI               = false # Enable/Disable GUI
+RAM               = 512   # Default memory size in MB
 
 # Network configuration
 DOMAIN            = ".nat.example.com"
@@ -43,6 +37,7 @@ end
 
 # ---- Vagrant configuration ----
 
+VAGRANTFILE_API_VERSION = '2'
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.box     = BOX
