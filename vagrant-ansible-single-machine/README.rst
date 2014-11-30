@@ -7,7 +7,7 @@ This project is an example for using *Ansible* with a *single* Vagrant
 machine. This project is the result of researching how to work with
 Debops and Vagrant and shows that this is not the way to go.
 
-If you want to use Debops and Vagrant, we suggest you have a lokk at
+If you want to use Debops and Vagrant, we suggest you have a look at
 the other examples.
 
 
