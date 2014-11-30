@@ -4,6 +4,7 @@ ansible/secret
 secret
 ansible.cfg
 /.vagrant
+vagrant_ansible_inventory
 
 ### vim ###
 [._]*.s[a-w][a-z]
