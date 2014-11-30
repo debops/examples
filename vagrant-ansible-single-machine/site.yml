@@ -1,0 +1,28 @@
+---
+
+- hosts: all
+  gather_facts: false
+
+  tasks:
+  - name: Show the groups to see if Vagratn set them up correctly
+    debug: var=groups
+
+  - debug: var=allGroupsVar
+  - debug: var=groupVar
+  - debug: var=hostVar
+
+- name: Run the first group of hosts
+  hosts: firstGroup
+  gather_facts: false
+
+  tasks:
+  - name: Check if host is in first group
+    debug: msg="Host is in first group"
+
+- name: Run the second group of hosts
+  hosts: secondGroup
+  gather_facts: false
+
+  tasks:
+  - name: Check if host is in the second group
+    debug: msg="Host is in second group"

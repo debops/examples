@@ -1,0 +1,75 @@
+# -*- mode: ruby -*-
+# vim: ft=ruby
+
+
+# ---- Configuration variables ----
+
+GUI               = false # Enable/Disable GUI
+RAM               = 128   # Default memory size in MB
+
+# Network configuration
+DOMAIN            = ".nat.example.com"
+NETWORK           = "192.168.50."
+NETMASK           = "255.255.255.0"
+
+# Default Virtualbox .box
+# Source: https://github.com/ginas/vagrant-debian-wheezy-64
+BOX               = 'debian-wheezy-amd64-netinst'
+BOX_URL           = 'https://dl.dropboxusercontent.com/u/55426468/20140317/debian-wheezy-amd64-netinst.box'
+
+
+HOSTS = {
+   "web" => [NETWORK+"10", RAM, GUI, BOX],
+   "db" => [NETWORK+"11", RAM, GUI, BOX],
+}
+
+ANSIBLE_INVENTORY = 'ansible/inventory'
+
+# ---- Custom commands run on the main host ----
+
+# Create a dummy playbook to both get the auto-generated inventory and
+# keep `ansible-playbook` happy.
+ANSIBLE_DUMMY_PLAYBOOK  = ".vagrant/provisioners/ansible/dummy.yml"
+require 'pathname'
+pb = Pathname.new(ANSIBLE_DUMMY_PLAYBOOK)
+pb.parent.mkpath()
+pb.open('w') do |f1|
+  f1.puts '---'
+  f1.puts '- hosts: "!all"'
+end
+
+# Symlink auto-generated inventory-file to inventory
+aiv = Pathname.new(ANSIBLE_INVENTORY)
+viv = Pathname.new('.vagrant/provisioners/ansible/inventory')
+aiv.mkpath()
+name = 'vagrant_ansible_inventory'
+target = aiv+name
+target.make_symlink((viv+name).relative_path_from(aiv)) unless target.symlink?()
+
+# ---- Vagrant configuration ----
+
+Vagrant.configure(2) do |config|
+  HOSTS.each do | (name, cfg) |
+    ipaddr, ram, gui, box = cfg
+
+    config.vm.define name do |machine|
+      machine.vm.box     = box
+      machine.vm.box_url = BOX_URL
+      machine.vm.guest = :debian
+      machine.vm.provider "virtualbox" do |vbox|
+        vbox.gui    = gui
+        vbox.memory = ram
+      end
+
+      machine.vm.hostname = name + DOMAIN
+      machine.vm.network 'private_network', ip: ipaddr, netmask: NETMASK
+    end
+  end # HOSTS-each
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.host_key_checking = "false"
+    ansible.playbook = ANSIBLE_DUMMY_PLAYBOOK
+    ansible.raw_arguments = ['--syntax-check']
+  end
+
+end
