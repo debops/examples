@@ -4,7 +4,7 @@
   gather_facts: false
 
   tasks:
-  - name: Show the groups to see if Vagratn set them up correctly
+  - name: Show the groups to see if Vagrant set them up correctly
     debug: var=groups
 
   - debug: var=allGroupsVar
