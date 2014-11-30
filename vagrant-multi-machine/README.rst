@@ -42,6 +42,18 @@ resp. Ansible does not find the inventory, you may safely run ``vagrant
 provision`` to regenerate it.
 
 
+How it works
+==============
+
+In addtion to the symlink to the generated inventory file, this
+example makes use of both :file:`.debops.cfg` and the
+``ansible_config_hook``. The former will define the hook and the hook
+will add some requried configuration to ``ansible.cfg``. Required
+options are the ssh-user, the ssh-key-file and (optionally) swicthing
+of ssh host-key-checking.
+
+
+
 Adopting to your needs
 =========================
 
