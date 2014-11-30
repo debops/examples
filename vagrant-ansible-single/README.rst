@@ -3,13 +3,12 @@
 Using Ansible with a single Vagrant box
 =====================================================
 
-This project is an example for using Ansible with a *single*
-Vagrant box. This project does not show how to work with debops and
-Vagrant, so one may consider it a research project.
+This project is an example for using *Ansible* with a *single* Vagrant
+machine. This project is the result of researching how to work with
+Debops and Vagrant and shows that this is not the way to go.
 
-Please note: If you want to configure several boxes in the same
-Vagrantfile, you should take a different approach, see the other
-Vagrant examples.
+If you want to use Debops and Vagrant, we suggest you have a lokk at
+the other examples.
 
 
 Requirements
@@ -17,18 +16,17 @@ Requirements
 
 * Ansible
 * Vagrant 1.6 or newer (1.5 may work, too; 1.4 does not)
-* `debops` (of course ;-)
 
 
 Quick Start
 ===========
 
-* Fire up Vagrant: `vagrant up`
+* Fire up Vagrant: ``vagrant up``
 
   This will create a virtual machine `web` and run a simple playbook
   testing if some variables have been set up correctly. Since there
-  are only one host and one group defined, should get one "skipped"
-  message.
+  are only one host and one group defined, you should get one
+  "skipped" message.
 
 
 How it works
@@ -36,7 +34,7 @@ How it works
 
 `vagrant` will generate an inventory-file somewhere `.vagrant/` (you
 do not need to care). This inventory will be set up with the data
-specified in the `Vagrantfile`. When running the ansible provisioner,
+specified in the `Vagrantfile`. When running the Ansible provisioner,
 this inventory is passed to `ansible-playbook`.
 
 In addition, the Vagrantfile will symlink some files or directories
@@ -57,8 +55,8 @@ In short:
 Some notes
 ================
 
-* About the vagrant ansible provisioner:
-  - If `ansible.inventory_path` is set, the provider will not
+* About the vagrant Ansible provisioner:
+  - If `ansible.inventory_path` is set, the provisioner will not
     generate an inventory file. You will have to take care of this by
     yourself.
   - The path in `ansible.inventory_path`, if given, must already exist.
@@ -74,11 +72,14 @@ Using a hand crafted inventory
 
 If for some reason you prefer to craft the inventory yourself
 (instead of letting vagrant generate it) you can pass your inventory
-to the ansible provisioner in the `Vagrantfile`. See the commented out
+to the Ansible provisioner in the `Vagrantfile`. See the commented out
 example in he supplied Vagrantfile. Or course, the argument can be
 anything `ansible-playbook` will accept as an inventory: a file, a
 directory or some executable.
 
-Please mind: If you have a `ansible.cfg` in place, e.g. as generated
-by `debops`, this may define an additional inventory which may
-interfere with yours.
+
+..
+ Local Variables:
+ mode: rst
+ ispell-local-dictionary: "american"
+ End:

@@ -4,7 +4,7 @@ Using Debops with a multi-machine Vagrantfile
 =====================================================
 
 This project is an example for using Debops with a multi-machine
-Vagrantfile. It uses the Vagrant Ansible-provider only to generate the
+Vagrantfile. It uses the Vagrant Ansible provider only to generate the
 inventory-file. Provision is then actually done using `debops` as
 usual.
 
