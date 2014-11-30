@@ -5,7 +5,7 @@
 # ---- Configuration variables ----
 
 GUI               = false # Enable/Disable GUI
-RAM               = 512   # Default memory size in MB
+RAM               = 128   # Default memory size in MB
 
 # Network configuration
 DOMAIN            = ".nat.example.com"
@@ -23,14 +23,15 @@ HOSTS = {
    "db" => [NETWORK+"11", RAM, GUI, BOX],
 }
 
+ANSIBLE_INVENTORY = 'ansible/inventory'
 
 # ---- Custom commands run on the main host ----
 
 # Create a dummy playbook to both get the auto-generated inventory and
 # keep `ansible-playbook` happy.
-ANSIBLE_PLAYBOOK  = ".vagrant/provisioners/ansible/dummy.yml"
+ANSIBLE_DUMMY_PLAYBOOK  = ".vagrant/provisioners/ansible/dummy.yml"
 require 'pathname'
-pb = Pathname.new(ANSIBLE_PLAYBOOK)
+pb = Pathname.new(ANSIBLE_DUMMY_PLAYBOOK)
 pb.parent.mkpath()
 pb.open('w') do |f1|
   f1.puts '---'
@@ -38,18 +39,18 @@ pb.open('w') do |f1|
 end
 
 # Symlink auto-generated inventory-file to inventory
-aiv = Pathname.new('ansible/inventory')
+aiv = Pathname.new(ANSIBLE_INVENTORY)
 viv = Pathname.new('.vagrant/provisioners/ansible/inventory')
 aiv.mkpath()
 name = 'vagrant_ansible_inventory'
 target = aiv+name
-target.make_symlink((viv+name).relative_path_from(aiv)) unless target.exist?
+target.make_symlink((viv+name).relative_path_from(aiv)) unless target.symlink?()
 
 # ---- Vagrant configuration ----
 
 Vagrant.configure(2) do |config|
   HOSTS.each do | (name, cfg) |
-    ip, ram, gui, box = cfg
+    ipaddr, ram, gui, box = cfg
 
     config.vm.define name do |machine|
       machine.vm.box     = box
@@ -61,13 +62,13 @@ Vagrant.configure(2) do |config|
       end
 
       machine.vm.hostname = name + DOMAIN
-      machine.vm.network :private_network, ip: NETWORK + "10", :netmask => NETMASK
+      machine.vm.network 'private_network', ip: ipaddr, netmask: NETMASK
     end
   end # HOSTS-each
 
   config.vm.provision "ansible" do |ansible|
     ansible.host_key_checking = "false"
-    ansible.playbook       = ANSIBLE_PLAYBOOK
+    ansible.playbook = ANSIBLE_DUMMY_PLAYBOOK
     ansible.raw_arguments = ['--syntax-check']
   end
 
