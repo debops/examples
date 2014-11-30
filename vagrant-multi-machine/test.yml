@@ -1,0 +1,9 @@
+---
+
+- hosts: all
+
+  tasks:
+  - name: Show the groups to see if Vagrant set them up correctly
+    debug: var=groups
+
+  - debug: var=ansible_ssh_user
