@@ -1,0 +1,64 @@
+# -*- mode: ruby -*-
+# vim: ft=ruby
+
+# ---- Configuration variables ----
+
+GUI      = false # Enable/Disable GUI
+RAM      = 128   # Default memory size in MB
+
+# Network configuration
+DOMAIN   = ".nat.example.com"
+NETWORK  = "192.168.50."
+NETMASK  = "255.255.255.0"
+
+# Default Virtualbox .box
+ # Source: https://github.com/ginas/vagrant-debian-wheezy-64
+BOX       = 'debian-wheezy-amd64-netinst'
+BOXES_URL = 'https://dl.dropboxusercontent.com/u/55426468/20140317'
+
+HOSTS = {
+   "test1" => [NETWORK+"10", RAM, GUI, BOX],
+}
+
+DEBOPS = "~/.local/share/debops/debops-playbooks"
+
+#=== end of configuration part ===
+
+$script = <<SCRIPT
+apt-get install --no-install-recommends --yes python-pip make git
+cd /tmp
+#wget https://github.com/nickjj/rolespec/archive/master.zip
+wget https://github.com/htgoebel/rolespec/archive/master.zip
+unzip master.zip
+sudo make -C rolespec-master install
+rm -rf master.zip* rolespec-master
+cd -
+SCRIPT
+
+# ---- Vagrant configuration ----
+
+Vagrant.configure(2) do |config|
+  HOSTS.each do | (name, cfg) |
+    ipaddr, ram, gui, box = cfg
+
+    config.vm.define name do |machine|
+      machine.vm.box     = box
+      machine.vm.box_url = BOXES_URL + box + '.box'
+      machine.vm.guest = :debian
+      machine.vm.provider "virtualbox" do |vbox|
+        vbox.gui    = gui
+        vbox.memory = ram
+      end
+
+      machine.vm.hostname = name + DOMAIN
+      machine.vm.network 'private_network', ip: ipaddr, netmask: NETMASK
+    end
+
+    config.vm.provision "shell", inline: $script
+    config.vm.synced_folder "..", "/roles/local"
+    config.vm.synced_folder DEBOPS, "/debops-playbooks"
+    config.vm.synced_folder DEBOPS + "/roles", "/roles/debops-roles"
+
+  end # HOSTS-each
+
+end
