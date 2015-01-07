@@ -12,6 +12,10 @@ Further documentation will be added at a later time.
   Vagrantfile
 * `webhost-gitusers-dokuwiki`: Setting up a Webserver with nginx,
   docuwiki and gituser.
+* `testing-roles-rolespec-vagrant`: Setting up a virtual machine
+  (using Vagrant) for testing roles using
+  [rolespec](https://github.com/nickjj/rolespec)
+
 
 ### Advances examples
 
