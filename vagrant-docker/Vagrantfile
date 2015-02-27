@@ -1,0 +1,55 @@
+# -*- mode: ruby -*-
+# vim: ft=ruby
+
+
+# ---- Configuration variables ----
+
+# Network configuration -- this is currently not by the docker provider
+DOMAIN            = ".nat.example.com"
+NETWORK           = "192.168.50."
+NETMASK           = "255.255.255.0"
+
+# image to use if not building from accompanying Dockerfile
+IMAGE = "debian:stable"
+
+HOSTS = {
+   "web" => [NETWORK+"10", IMAGE],
+   "db" => [NETWORK+"11", IMAGE],
+}
+
+ANSIBLE_INVENTORY_DIR = 'ansible/inventory'
+
+# ---- Vagrant configuration ----
+
+Vagrant.configure(2) do |config|
+  HOSTS.each do | (name, cfg) |
+    ipaddr, ram, gui, image = cfg
+
+    config.vm.define name do |machine|
+      machine.vm.guest = :debian
+      machine.vm.provider "docker" do |d|
+        d.build_dir = '.' # build from provided Dockerfile
+        #d.image = image  # use the predefined image
+        d.remains_running = true
+        d.cmd = ["/usr/sbin/sshd", "-D"]
+        d.has_ssh = true
+        machine.ssh.password = "vagrant"
+      end
+
+      machine.vm.hostname = name + DOMAIN
+      machine.vm.network 'private_network', ip: ipaddr, netmask: NETMASK
+    end
+  end # HOSTS-each
+
+  config.vm.provision "vai" do |ansible|
+    ansible.inventory_dir=ANSIBLE_INVENTORY_DIR
+    # optional: add a group listing all vagrant machines
+    ansible.groups = {
+      'secondGroup' => [ "db" ],
+    #  '_provided_by_vagrant_'=> HOSTS.keys,
+    #  '_running_in_docker_'=> HOSTS.keys,
+    }
+  end
+
+end
+
