@@ -19,6 +19,7 @@ Requirements
 
 * Ansible
 * Vagrant 1.6 or newer (1.5 may work, too; 1.4 does not)
+* Vai_, a Vagrant provisioner plugin (see below for installation)
 * `debops` (of course ;-)
 
 
