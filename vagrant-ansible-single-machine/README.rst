@@ -45,6 +45,7 @@ Adopting to your needs
 =========================
 
 In short:
+
 - Set up your host and group-vars in `ansible/inventory` as usual.
 - The playbook the provisioner runs is set in the Vagrantfile
   (:var:`ANSIBLE_PLAYBOOK`).
@@ -56,6 +57,7 @@ Some notes
 ================
 
 * About the vagrant Ansible provisioner:
+
   - If `ansible.inventory_path` is set, the provisioner will not
     generate an inventory file. You will have to take care of this by
     yourself.

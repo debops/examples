@@ -108,6 +108,7 @@ machines except the last. This is because the provisioner is only
 attached to the last machine.
 
 * About the vagrant Ansible provisioner:
+
   - If `ansible.inventory_path` is set, the provider will not
     generate an inventory file. You will have to take care of this by
     yourself.
