@@ -4,23 +4,17 @@
 
 # ---- Configuration variables ----
 
-GUI               = false # Enable/Disable GUI
-RAM               = 128   # Default memory size in MB
-
-# Network configuration
+# Network configuration -- this is currently not by the docker provider
 DOMAIN            = ".nat.example.com"
 NETWORK           = "192.168.50."
 NETMASK           = "255.255.255.0"
 
-# Default Virtualbox .box
-# Source: https://github.com/ginas/vagrant-debian-wheezy-64
-BOX               = 'debian-wheezy-amd64-netinst'
-BOX_URL           = 'https://dl.dropboxusercontent.com/u/55426468/20140317/debian-wheezy-amd64-netinst.box'
-
+# image to use if not building from accompanying Dockerfile
+IMAGE = "debian:stable"
 
 HOSTS = {
-   "web" => [NETWORK+"10", RAM, GUI, BOX],
-   "db" => [NETWORK+"11", RAM, GUI, BOX],
+   "web" => [NETWORK+"10", IMAGE],
+   "db" => [NETWORK+"11", IMAGE],
 }
 
 ANSIBLE_INVENTORY_DIR = 'ansible/inventory'
@@ -29,15 +23,17 @@ ANSIBLE_INVENTORY_DIR = 'ansible/inventory'
 
 Vagrant.configure(2) do |config|
   HOSTS.each do | (name, cfg) |
-    ipaddr, ram, gui, box = cfg
+    ipaddr, ram, gui, image = cfg
 
     config.vm.define name do |machine|
-      machine.vm.box     = box
-      machine.vm.box_url = BOX_URL
       machine.vm.guest = :debian
-      machine.vm.provider "virtualbox" do |vbox|
-        vbox.gui    = gui
-        vbox.memory = ram
+      machine.vm.provider "docker" do |d|
+        d.build_dir = '.' # build from provided Dockerfile
+        #d.image = image  # use the predefined image
+        d.remains_running = true
+        d.cmd = ["/usr/sbin/sshd", "-D"]
+        d.has_ssh = true
+        machine.ssh.password = "vagrant"
       end
 
       machine.vm.hostname = name + DOMAIN
@@ -51,7 +47,9 @@ Vagrant.configure(2) do |config|
     ansible.groups = {
       'secondGroup' => [ "db" ],
     #  '_provided_by_vagrant_'=> HOSTS.keys,
+    #  '_running_in_docker_'=> HOSTS.keys,
     }
   end
 
 end
+

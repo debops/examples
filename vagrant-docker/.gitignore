@@ -1,0 +1,35 @@
+# -*- mode: gitignore; -*-
+
+ansible/secret
+secret
+ansible.cfg
+/.vagrant
+vagrant_ansible_inventory
+
+### vim ###
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
+### Emacs ###
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+### SublimeText ###
+# workspace files are user-specific
+*.sublime-workspace
+
+# project files should be checked into the repository, unless a significant
+# proportion of contributors will probably not be using SublimeText
+# *.sublime-project
+
+#sftp configuration file
+sftp-config.json
