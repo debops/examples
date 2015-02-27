@@ -23,28 +23,7 @@ HOSTS = {
    "db" => [NETWORK+"11", RAM, GUI, BOX],
 }
 
-ANSIBLE_INVENTORY = 'ansible/inventory'
-
-# ---- Custom commands run on the main host ----
-
-# Create a dummy playbook to both get the auto-generated inventory and
-# keep `ansible-playbook` happy.
-ANSIBLE_DUMMY_PLAYBOOK  = ".vagrant/provisioners/ansible/dummy.yml"
-require 'pathname'
-pb = Pathname.new(ANSIBLE_DUMMY_PLAYBOOK)
-pb.parent.mkpath()
-pb.open('w') do |f1|
-  f1.puts '---'
-  f1.puts '- hosts: "!all"'
-end
-
-# Symlink auto-generated inventory-file to inventory
-aiv = Pathname.new(ANSIBLE_INVENTORY)
-viv = Pathname.new('.vagrant/provisioners/ansible/inventory')
-aiv.mkpath()
-name = 'vagrant_ansible_inventory'
-target = aiv+name
-target.make_symlink((viv+name).relative_path_from(aiv)) unless target.symlink?()
+ANSIBLE_INVENTORY_DIR = 'ansible/inventory'
 
 # ---- Vagrant configuration ----
 
@@ -66,10 +45,13 @@ Vagrant.configure(2) do |config|
     end
   end # HOSTS-each
 
-  config.vm.provision "ansible" do |ansible|
-    ansible.host_key_checking = "false"
-    ansible.playbook = ANSIBLE_DUMMY_PLAYBOOK
-    ansible.raw_arguments = ['--syntax-check']
+  config.vm.provision "vai" do |ansible|
+    ansible.inventory_dir=ANSIBLE_INVENTORY_DIR
+    # optional: add a group listing all vagrant machines
+    ansible.groups = {
+      'secondGroup' => [ "db" ],
+    #  '_provided_by_vagrant_'=> HOSTS.keys,
+    }
   end
 
 end
