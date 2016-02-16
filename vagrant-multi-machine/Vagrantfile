@@ -13,9 +13,8 @@ NETWORK           = "192.168.50."
 NETMASK           = "255.255.255.0"
 
 # Default Virtualbox .box
-# Source: https://github.com/ginas/vagrant-debian-wheezy-64
-BOX               = 'debian-wheezy-amd64-netinst'
-BOX_URL           = 'https://dl.dropboxusercontent.com/u/55426468/20140317/debian-wheezy-amd64-netinst.box'
+# See: https://wiki.debian.org/Teams/Cloud/VagrantBaseBoxes
+BOX               = 'debian/jessie64'
 
 
 HOSTS = {
@@ -32,9 +31,9 @@ Vagrant.configure(2) do |config|
     ipaddr, ram, gui, box = cfg
 
     config.vm.define name do |machine|
-      machine.vm.box     = box
-      machine.vm.box_url = BOX_URL
+      machine.vm.box   = box
       machine.vm.guest = :debian
+
       machine.vm.provider "virtualbox" do |vbox|
         vbox.gui    = gui
         vbox.memory = ram
