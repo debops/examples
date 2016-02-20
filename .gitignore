@@ -1,6 +1,8 @@
 ansible/secret
 secret
 ansible.cfg
+.vagrant
+roles
 
 *.py[co]
 

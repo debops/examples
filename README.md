@@ -17,8 +17,10 @@ Further documentation will be added at a later time.
   [rolespec](https://github.com/nickjj/rolespec)
 
 
-### Advances examples
+### Advanced examples
 
+* `debops-bootstrap`: Bootstrap a DebOps virtual machine with Vagrant
+   and run `debops` against it.
 * `devlab`: manage a "development lab" on an Ubuntu/Xubuntu host with
    KVM virtual machines guests, which also are LXC hosts for
    containers.

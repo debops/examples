@@ -1,0 +1,54 @@
+---
+
+- hosts: debops_master
+  become: True
+  become_user: root
+
+  pre_tasks:
+
+    - name: Download bootstrap-ansible.sh script
+      get_url:
+        url: 'https://raw.githubusercontent.com/debops/debops/master/misc/scripts/bootstrap-ansible.sh'
+        dest: '/usr/local/sbin'
+        mode: '0755'
+
+    - name: Build Ansible Debian package
+      command: '/usr/local/sbin/bootstrap-ansible.sh'
+      args:
+        creates: /usr/bin/ansible
+
+  roles:
+
+    - role: ansible-debops
+
+  tasks:
+
+    - name: Upload SSH private key
+      copy:
+        src: '{{ ansible_ssh_private_key_file }}'
+        dest: '/home/vagrant/.ssh/id_rsa'
+        owner: 'vagrant'
+        group: 'vagrant'
+        mode: '0600'
+
+    - name: Upload Ansible inventory
+      copy:
+        src: '.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory'
+        dest: '{{ debops_project_name }}/ansible/inventory/hosts'
+        owner: 'vagrant'
+        group: 'vagrant'
+      when: vagrant_upload_inventory|d()
+
+    - name: Cleanup inventory definitions
+      lineinfile:
+        dest: '{{ debops_project_name }}/ansible/inventory/hosts'
+        regexp: '.*ansible_ssh_private_key_file.*'
+        state: absent
+      when: vagrant_upload_inventory|d()
+
+    - name: Run DebOps
+      become: False
+      command: debops
+      args:
+        chdir: '{{ debops_project_name }}'
+      when: vagrant_run_debops|d()

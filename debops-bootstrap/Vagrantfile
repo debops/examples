@@ -1,0 +1,76 @@
+# -*- mode: ruby -*-
+# vim: ft=ruby
+
+
+# ---- Configuration variables ----
+
+GUI               = false # Enable/Disable GUI
+RAM               = 128   # Default memory size in MB
+
+# Network configuration
+DOMAIN            = ".nat.example.com"
+NETWORK           = "192.168.50."
+NETMASK           = "255.255.255.0"
+
+# Default Virtualbox .box
+# See: https://wiki.debian.org/Teams/Cloud/VagrantBaseBoxes
+BOX               = 'debian/jessie64'
+
+# Ansible configuration
+ANSIBLE_PLAYBOOK  = "bootstrap-debops.yml"
+
+
+# ---- Custom commands run on the main host ----
+
+# Clone ansible-bootstrap repository
+system("
+  if [ #{ARGV[0]} = 'up' ]; then
+    test -d roles || mkdir -p roles
+    if [ ! -d roles/ansible-debops ]; then
+      echo 'Cloning ansible-debops role'
+      git clone https://github.com/debops/ansible-debops roles/ansible-debops
+    else
+      echo 'Updating ansible-debops role'
+      cd roles/ansible-debops && git pull ; cd - >/dev/null
+    fi
+  fi
+")
+
+
+# ---- Vagrant configuration ----
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box   = BOX
+  config.vm.guest = :debian
+
+  config.vm.provider "virtualbox" do |vbox|
+    vbox.gui    = GUI
+    vbox.memory = RAM
+  end
+
+  config.vm.define :master do |master|
+    master.vm.hostname = 'master' + DOMAIN
+    master.vm.network :private_network, ip: NETWORK + "10", netmask: NETMASK
+
+    config.vm.provision "ansible" do |ansible|
+      ansible.host_key_checking	= "false"
+      ansible.playbook          = ANSIBLE_PLAYBOOK
+      ansible.groups            = {
+        "debops_master"           => ["master"],
+        "debops_master:vars"      => {
+          "vagrant_upload_inventory"  => "True",
+          "vagrant_run_debops"        => "True",
+          "debops_ansible_packages"   => "[]",
+          "debops_install_systemwide" => "False",
+          "debops_update_method"      => "sync",
+          "debops_project_name"       => "debops-project"
+        },
+        "debops_all_hosts"        => ["master"],
+        "debops_all_hosts:vars"   => {
+          "dhparam_bits"              => "[ '1024' ]",
+        },
+      }
+    end
+  end
+end
