@@ -31,6 +31,13 @@
         group: 'vagrant'
         mode: '0600'
 
+    - name: Disable strict SSH host key check
+      ini_file:
+        dest: '{{ debops_project_name }}/.debops.cfg'
+        section: 'ansible defaults'
+        option: 'host_key_checking'
+        value: 'False'
+
     - name: Upload Ansible inventory
       copy:
         src: '.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory'
