@@ -37,6 +37,7 @@ Vagrant.configure(2) do |config|
       machine.vm.provider "virtualbox" do |vbox|
         vbox.gui    = gui
         vbox.memory = ram
+        vbox.name = name
       end
 
       machine.vm.hostname = name + DOMAIN
