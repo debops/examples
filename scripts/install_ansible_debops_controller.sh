@@ -5,9 +5,11 @@
 #
 # https://docs.debops.org/en/master/user-guide/install.html
 #
-# This scripts installs DebOps and its dependencies on a (fresh) system.
-# It creates a dedicated DebOps user (e.g. ansible) who should then execute all DebOps-playbooks.
-# This script only installs DebOps globally , it does not initiliaze any DebOps-project.
+# This scripts installs DebOps and its dependencies on a (fresh) deployed
+# system with only a root account. It creates a dedicated DebOps user
+# (e.g. ansible) who should then execute all DebOps-playbooks.
+# This script only installs DebOps globally,it does not initiliaze any
+# DebOps-project.
 #
 ################################################################################
 
