@@ -6,6 +6,12 @@
 # This script calls the needed DebOps plays/roles in order to provision a new cloud VM,
 # then prepares the VM to be ansible managed and runs additional Ansible Playbooks in the correct order.
 #
+# Usage:
+#     ./provisioning.sh -l <host-or-group-to-provision>
+#
+#     You can also pass ansible parameter to DebOps
+#     ./provisioning.sh -l <host-or-group-to-provision> -t role::pki --skip-tags role::owncloud --user root -vvv
+#
 ################################################################################
 
 set -o nounset -o pipefail -o errexit
