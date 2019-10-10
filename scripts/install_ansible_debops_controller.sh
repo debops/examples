@@ -50,7 +50,6 @@ pip3 install \
 
 echo "Cleaning up cache directories..."
 apt clean
-rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*.deb /root/.cache/*
 
 echo "Add '${DEBOPS_ADMIN_USER}' admin user"
 groupadd --system admins
