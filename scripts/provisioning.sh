@@ -32,5 +32,5 @@ debops $@
 # Run the PKI role a second time (the first is executed from the site.yml DebOps playbook)
 #   The second run is necessary for DebOps to download/request the Let's Encrypt ACME TLS certificates
 #   Somehow during the first run, only the internal CA TLS Certificates are installed, but not the ACME certificates.
-#   Running role::pki helps to get the ACME certs.
-debops -t role::pki $@
+#   Running debops.pki helps to get the ACME certs.
+debops service/pki $@
