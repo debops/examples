@@ -29,8 +29,25 @@ debops --become $@ bootstrap-ldap || debops --become --user root $@ bootstrap-ld
 # Execute all DebOps plays (site.yml) to install everything.
 debops $@
 
-# Run the PKI role a second time (the first is executed from the site.yml DebOps playbook)
-#   The second run is necessary for DebOps to download/request the Let's Encrypt ACME TLS certificates
-#   Somehow during the first run, only the internal CA TLS Certificates are installed, but not the ACME certificates.
-#   Running debops.pki helps to get the ACME certs.
+# Run the debops.pki role a second time to really get the Let's Encrypt TLS certificates.
+# The second run is necessary for DebOps to request the Let's Encrypt certificates
+# sucessfully,due to a "chicken-egg problem":
+#  - the debops.pki role needs the nginx server configured with debops.nginx role
+#    to handle the ACME http-01 authentication request
+#  - So, on the first run, Let's Encrypt certificates cannot be acquired because
+#    nginx server isn't ready to help authenticate the request.
+#
+# In order to get Let's Encrypt/ACME TLS certificates you need to meet this requirements:
+#  - nginx server is configured: add your server to the [debops_service_nginx] group
+#  - the host has at least 1 public IP address
+#  - add DNS records pointing to the public IP address of the server for ALL domains,
+#    for which an LE certificate is being requested, e.g 'cloud.example.net'
+#  - a separate PKI realm is configured:
+#      pki_host_realms:
+#        # Nextcloud
+#        - name: 'cloud.example.net'
+#          acme: true
+#          acme_domains:
+#            - 'cloud.example.net'
+#
 debops service/pki $@
