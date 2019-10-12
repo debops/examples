@@ -24,7 +24,7 @@ if [[ ! -f .debops.cfg && -f ../.debops.cfg ]]; then
 fi
 
 # Run the bootstrap DebOps playbook to make the VM a DebOps/Ansible managed host.
-debops $@ bootstrap-ldap || debops --user root $@ bootstrap-ldap
+debops $@ bootstrap || debops --user root $@ bootstrap
 
 # Execute all DebOps plays (site.yml) to install everything.
 debops $@
